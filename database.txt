@@ -1,0 +1,48 @@
+admin
+fullname        
+email            
+password            
+phone           
+gender            
+status            
+
+areas
+area_name
+
+clients
+fullname
+phone
+address
+area_id -> foreign to areas table id
+gender
+created_at
+created_by
+updated_at
+
+clients_loans
+client_id -> foreign to clients table id
+pn_number -> AREA -> if AREA - 1 A12025-DATETODAY-client id it must A12025-12-03-01
+loan_from -> date
+loan_to -> date
+loan_amount
+balance -> maseset kung magkano ang loan_amount
+daily -> nullable
+principal -> kung magkano ang loan_amount
+loan_terms
+status -> unpaid paid
+created_at
+created_by
+updated_at
+
+clients_area_daily
+reference_number -> format 2025-12-03-001 datetoday -- 001
+due_date -> datetoday
+client_id -> foreign to clients table id
+client_loans_id -> foreign to clients_loans table id
+client_area -> foreign to areas table id
+collection
+type
+created_at
+created_by
+updated_at
+

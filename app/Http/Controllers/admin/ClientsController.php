@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Areas;
+use App\Models\Clients;
+use App\Models\ClientsLoans;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClientsController extends Controller
 {
@@ -12,7 +17,12 @@ class ClientsController extends Controller
      */
     public function index()
     {
-        return view('admin.clients.index');
+        $areas = DB::table('areas')->get();
+        $clients = DB::table('clients')
+        ->leftJoin('areas', 'clients.area_id', '=', 'areas.id')
+        ->select('clients.*', 'areas.area_name as area_name')
+        ->get();
+        return view('admin.clients.index', compact('areas', 'clients'));
     }
 
     /**
@@ -28,7 +38,56 @@ class ClientsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // VALIDATION
+        $validated = $request->validate([
+            'fullname'      => 'required|string|max:255',
+            'phone'         => 'required|digits:11',
+            'address'       => 'required|string|max:255',
+            'area_id'       => 'required|exists:areas,id',
+            'gender'        => 'required|string',
+
+            'loan_from'     => 'required|date',
+            'loan_to'       => 'required|date|after_or_equal:loan_from',
+            'loan_amount'   => 'required|numeric|min:1',
+            'loan_terms'    => 'required|numeric',
+        ]);
+
+        // SAVE CLIENT
+        $client = Clients::create([
+            'fullname'   => $request->fullname,
+            'phone'      => $request->phone,
+            'address'    => $request->address,
+            'area_id'    => $request->area_id,
+            'gender'     => $request->gender,
+            'created_by' => auth()->guard('admin')->user()->fullname ?? 'System',
+        ]);
+
+        // GENERATE PN NUMBER
+        $area = Areas::find($request->area_id);
+
+        // Example: A12025-12-03-01
+        $area_code = strtoupper(substr($area->area_name, 0, 1)) . $area->id; // A1
+
+        $today = now()->format('m-d');  // 12-03
+        $year  = now()->format('Y');    // 2025
+
+        $pn_number = $area_code . $year . "-" . $today . "-" . sprintf("%02d", $client->id);
+
+        // SAVE LOAN
+        ClientsLoans::create([
+            'client_id'   => $client->id,
+            'pn_number'   => $pn_number,
+            'loan_from'   => $request->loan_from,
+            'loan_to'     => $request->loan_to,
+            'loan_amount' => $request->loan_amount,
+            'balance'     => $request->loan_amount,
+            'principal'   => $request->loan_amount,
+            'loan_terms'  => $request->loan_terms,
+            'status'      => 'unpaid',
+            'created_by' => auth()->guard('admin')->user()->fullname ?? 'System',
+        ]);
+
+        return redirect()->back()->with('success', 'Client successfully created!');
     }
 
     /**
@@ -60,6 +119,9 @@ class ClientsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $client = Clients::findOrFail($id);
+        ClientsLoans::where('client_id', $client->id)->delete();
+        $client->delete();
+        return redirect()->back()->with('success', 'Client successfully deleted!');
     }
 }

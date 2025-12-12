@@ -14,20 +14,11 @@ class AdminTableSeeder extends Seeder
     public function run(): void
     {
         Admins::create([
-            'fullname' => 'Super Admin',
-            'email' => 'superadmin@ulc.com',
-            'password' => Hash::make('password123'),
+            'fullname' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('123456789'),
             'phone' => '09123456789',
             'gender' => 'Male',
-            'status' => 'verified',
-        ]);
-
-        Admins::create([
-            'fullname' => 'Regular Admin',
-            'email' => 'admin@ulc.com',
-            'password' => Hash::make('admin123'),
-            'phone' => '09876543210',
-            'gender' => 'Female',
             'status' => 'verified',
         ]);
     }

@@ -12,6 +12,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body>
@@ -48,24 +49,25 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form id="addClientForm" class="needs-validation" novalidate>
+                                    <form action="{{ route('clients.store') }}" method="POST" id="addClientForm" class="needs-validation" novalidate>
+                                        @csrf
                                         <div class="modal-body">
                                             <div class="row">
                                                 <!-- Left Column: Personal Info -->
                                                 <div class="col-md-6">
                                                     <h6 class="mb-3">Personal Information</h6>
                                                     <div class="mb-3">
-                                                        <label for="clientName" class="form-label">Full Name <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" id="clientName"
-                                                            name="clientName" required>
+                                                        <label for="fullname" class="form-label">Full Name <span style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <input type="text" class="form-control" id="fullname"
+                                                            name="fullname" required>
                                                         <div class="invalid-feedback">
                                                             Please enter full name.
                                                         </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="clientPhone" class="form-label">Phone <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" id="clientPhone"
-                                                            name="clientPhone" required pattern="\d{11}" minlength="11"
+                                                        <label for="phone" class="form-label">Phone <span style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <input type="text" class="form-control" id="phone"
+                                                            name="phone" required pattern="\d{11}" minlength="11"
                                                             maxlength="11">
                                                         <div class="invalid-feedback">
                                                             Please enter a valid phone number (11 digits required).
@@ -74,9 +76,9 @@
 
 
                                                     <div class="mb-3">
-                                                        <label for="clientAddress" class="form-label">Address <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" id="clientAddress"
-                                                            name="clientAddress" required>
+                                                        <label for="address" class="form-label">Address <span style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <input type="text" class="form-control" id="address"
+                                                            name="address" required>
                                                         <div class="invalid-feedback">
                                                             Please enter an address.
                                                         </div>
@@ -84,19 +86,15 @@
                                                     <div class="row">
                                                         <!-- Loan From -->
                                                         <div class="col-lg-5 mb-3">
-                                                            <label for="clientArea" class="form-label">Select
+                                                            <label for="area_id" class="form-label">Select
                                                                 Area <span style="color: rgb(126, 30, 30)">*</span></label>
                                                             <select class="form-control select-form select2"
-                                                                name="SELECT AREA" required>
+                                                                name="area_id" required>
                                                                 <option value="" disabled selected>SELECT AREA
+                                                                    @foreach ($areas as $area)
+                                                                        <option value="{{ $area->id }}">{{ $area->area_name }}</option>
+                                                                    @endforeach
                                                                 </option>
-                                                                <option value="">Area 1</option>
-                                                                <option value="">Area 1</option>
-                                                                <option value="">Area 1</option>
-                                                                <option value="">Area 1</option>
-                                                                <option value="">Area 1</option>
-                                                                <option value="">Area 1</option>
-                                                                <option value="">Area 1</option>
                                                             </select>
                                                             <div class="invalid-feedback">
                                                                 Select an area.
@@ -108,14 +106,14 @@
                                                             <label class="form-label d-block">Gender <span style="color: rgb(126, 30, 30)">*</span></label>
                                                             <div class="form-check form-check-inline">
                                                                 <input class="form-check-input" type="radio"
-                                                                    name="adminGender" id="genderMale" value="Male"
+                                                                    name="gender" id="genderMale" value="Male"
                                                                     checked>
                                                                 <label class="form-check-label"
                                                                     for="genderMale">Male</label>
                                                             </div>
                                                             <div class="form-check form-check-inline">
                                                                 <input class="form-check-input" type="radio"
-                                                                    name="adminGender" id="genderFemale"
+                                                                    name="gender" id="genderFemale"
                                                                     value="Female">
                                                                 <label class="form-check-label"
                                                                     for="genderFemale">Female</label>
@@ -131,27 +129,27 @@
                                                     <div class="row">
                                                         <!-- Loan From -->
                                                         <div class="col-lg-6 mb-3">
-                                                            <label for="loanFrom" class="form-label">Loan From <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                            <input type="date" class="form-control" id="loanFrom"
-                                                                name="loanFrom" required>
+                                                            <label for="loan_from" class="form-label">Loan From <span style="color: rgb(126, 30, 30)">*</span></label>
+                                                            <input type="date" class="form-control" id="loan_from"
+                                                                name="loan_from" required>
                                                             <div class="invalid-feedback">Please enter a valid date.
                                                             </div>
                                                         </div>
 
                                                         <!-- Loan To -->
                                                         <div class="col-lg-6 mb-3">
-                                                            <label for="loanTo" class="form-label">Loan To <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                            <input type="date" class="form-control" id="loanTo"
-                                                                name="loanTo" required>
+                                                            <label for="loan_to" class="form-label">Loan To <span style="color: rgb(126, 30, 30)">*</span></label>
+                                                            <input type="date" class="form-control" id="loan_to"
+                                                                name="loan_to" required>
                                                             <div class="invalid-feedback">Please enter a valid date.
                                                             </div>
                                                         </div>
                                                         <!-- Loan Amount -->
                                                         <div class="col-lg-6 mb-3">
-                                                            <label for="loanAmount" class="form-label">Loan
+                                                            <label for="loan_amount" class="form-label">Loan
                                                                 Amount <span style="color: rgb(126, 30, 30)">*</span></label>
                                                             <input type="number" class="form-control"
-                                                                id="loanAmount" name="loanAmount" required
+                                                                id="loan_amount" name="loan_amount" required
                                                                 min="0" step="0.01">
                                                             <div class="invalid-feedback">
                                                                 Please enter amount.
@@ -159,12 +157,12 @@
                                                         </div>
                                                         <!-- Loan Terms -->
                                                         <div class="col-lg-6 mb-3">
-                                                            <label for="loanTerms" class="form-label">Loan
+                                                            <label for="loan_terms" class="form-label">Loan
                                                                 Terms</label>
                                                             <input
                                                                 style="background-color: gray; color: white !important;"
-                                                                type="text" class="form-control" id="loanTerms"
-                                                                name="loanTerms" value="100" placeholder="100"
+                                                                type="text" class="form-control" id="loan_terms"
+                                                                name="loan_terms" value="100" placeholder="100"
                                                                 readonly required>
                                                         </div>
                                                     </div>
@@ -199,23 +197,29 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($clients as $client)
                                         <tr>
-                                            <td>Juan Dela Cruz</td>
-                                            <td>09495748302</td>
-                                            <td>Calingatan Mataasnakahoy Batangas</td>
-                                            <td>Area 1</td>
-                                            <td>2025-11-28 - 5:00pm <span class="badge rounded-pill bg-success">by:
-                                                    Russel Admin</span></td>
+                                            <td>{{ $client->fullname }}</td>
+                                            <td>{{ $client->phone }}</td>
+                                            <td>{{ $client->address }}</td>
+                                            <td>{{ $client->area_name }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F j, Y - h:i A') }} <span class="badge rounded-pill bg-success">by:
+                                                    {{ $client->created_by }}</span></td>
                                             <td>
-                                                <button class="btn btn-sm btn-warning" title="View Details">Update <i
+                                                <button class="btn btn-sm btn-outline-warning" title="View Details"><i
                                                         class="fas fa-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-danger" title="View Details">Delete<i
-                                                        class="fas fa-trash"></i>
-                                                </button>
+                                                <form action="{{ route('clients.destroy', $client->id) }}" method="POST" class="delete-client-form" style="display:inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-client-id="{{ $client->id }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
-                                       
+                                        @endforeach
+
                                     </tbody>
                                 </table>
                             </div>
@@ -226,6 +230,8 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -262,7 +268,42 @@
             })
         })();
     </script>
+    <script>
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            timeOut: 4000,
+            positionClass: "toast-top-right"
+        };
 
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+    </script>
+    <script>
+    $(document).ready(function() {
+        $('.delete-btn').click(function(e) {
+            e.preventDefault(); // prevent default button action
+
+            var form = $(this).closest('form'); // get the form
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // submit the form if confirmed
+                }
+            });
+        });
+    });
+    </script>
 </body>
 
 </html>

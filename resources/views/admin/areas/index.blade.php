@@ -31,10 +31,10 @@
                     <div class="card shadow-sm border-1">
                         <div class="d-flex justify-content-between align-items-center m-4">
                             <h5 class="card-title mb-0">Financial Counselor Area (FC)</h5>
-                            <button class="btn btn-outline-primary btn-sm d-flex align-items-center"
+                            {{-- <button class="btn btn-outline-primary btn-sm d-flex align-items-center"
                                 data-bs-toggle="modal" data-bs-target="#addFinancialCounselorModal">
                                 <i class="fas fa-plus-circle me-2"></i> ADD AREAS
-                            </button>
+                            </button> --}}
                             <i class="fas fa-plus-circle d-none"></i>
                         </div>
 
@@ -84,14 +84,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($areas as $area)
                                         <tr>
-                                            <td>Area 1</td>
+                                            <td>{{ $area->area_name}}</td>
                                             <td>
-                                                <a href="" class="btn btn-sm btn-info">View clients 
-                                                    <i class="fas fa-eye"></i>
+                                                <a href="{{ route('areas.show', $area->id) }}" class="btn btn-sm btn-outline-info">
+                                                    View Clients <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('areas.payments.show', $area->id) }}" class="btn btn-sm btn-outline-primary">
+                                                    Payments <i class="fa-solid fa-coins"></i>
                                                 </a>
                                             </td>
                                         </tr>
+                                        @endforeach
+
                                     </tbody>
                                 </table>
                             </div>
