@@ -7,7 +7,7 @@ use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\AdminManagementController;
 use App\Http\Controllers\admin\ClientsController;
 use App\Http\Controllers\admin\AreasController;
-
+use App\Http\Controllers\admin\PaymentsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,21 +31,25 @@ Route::get('/login', [AuthController::class, 'LoginPage'])->name('admin.login');
 Route::post('/login-request', [AuthController::class, 'LoginRequest'])->name('admin.login-request');
 Route::post('/logout', [AuthController::class, 'Logout'])->name('admin.logout');
 
+// Admin Routes
 Route::middleware('admin.auth')->group(function () {
+    // Dashboard Routes
     Route::get('/admin/dashboard', [DashboardController::class, 'DashboardPage'])->name('admin.dashboard');
+    Route::get('/admin/dashboard/chart-data', [DashboardController::class, 'getYearlyLoanData'])->name('dashboard.chart-data');
+    // Admins Routes
+    Route::resource('admin/admins', AdminManagementController::class);
+    // Clients Routes
     Route::resource('admin/clients', ClientsController::class);
+    // Areas Routes
+    Route::resource('admin/areas', AreasController::class);
+    // Payments Routes
+    Route::get('admin/areas/{id}/clients/payments', [PaymentsController::class, 'Payments'])->name('areas.payments.show');
+    Route::post('admin/areas/{id}/create', [PaymentsController::class, 'CreatePayments'])->name('areas.payments.create');
+    Route::get('admin/areas/{area}/{reference_number}/view', [PaymentsController::class, 'ViewPayment'])
+        ->name('areas.payments.view');
+    Route::post('admin/areas/{area_id}/{reference_number}/update', [PaymentsController::class, 'UpdatePayment'])->name('areas.payments.update');
 });
 
-// Admin Routes
-Route::resource('admin/admins', AdminManagementController::class);
 
 
-// Areas Routes
-Route::resource('admin/areas', AreasController::class);
 
-// Areas Payments Routes
-Route::get('admin/areas/{id}/clients/payments', [AreasController::class, 'Payments'])->name('areas.payments.show');
-Route::post('admin/areas/{id}/create', [AreasController::class, 'CreatePayments'])->name('areas.payments.create');
-Route::get('admin/areas/{area}/{reference_number}/view', [AreasController::class, 'ViewPayment'])
-    ->name('areas.payments.view');
-Route::post('admin/areas/{area_id}/{reference_number}/update', [AreasController::class, 'UpdatePayment'])->name('areas.payments.update');

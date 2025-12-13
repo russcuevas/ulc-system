@@ -30,15 +30,29 @@
                         Collections - {{ $area->area_name }}</li>
                 </ol>
             </nav>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm border-1">
-                        <div class="d-flex justify-content-between align-items-center m-4">
-                            <h5 class="card-title mb-0">REFERENCE NUMBER: {{ $reference_number }} - {{ $area->area_name }}
-                                <br>
-                                {{ \Carbon\Carbon::parse($clients->first()->due_date)->format('F j, Y') }}
-                            </h5>
-                        </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card shadow-sm border-1">
+                            <div class="row align-items-start m-3">
+                    <!-- Left Side -->
+                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                        <h5 class="mb-0">
+                            REFERENCE NUMBER: {{ $reference_number }}<br>
+                            Date: {{ \Carbon\Carbon::parse($clients->first()->due_date)->format('F j, Y') }}<br>
+                            No. of Clients: {{ $clients->count() }}
+                        </h5>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-12 col-md-6 text-md-end">
+                        <h5 class="mb-0">
+                            Collector: {{ $clients->first()->collected_by ?? '-' }}<br>
+                            Total Collected: <span class="text-danger">₱{{ number_format($clients->sum('collection'), 2) }}</span>
+                        </h5>
+                    </div>
+                </div>
+
+
 
                         <div class="card-body p-4">
                             <div class="table-responsive">
@@ -57,34 +71,49 @@
 
                                     <tbody>
                                     @foreach ($clients as $client)
-                                    <tr class="{{ $client->collection === null ? 'table-danger' : '' }}">
+                                    <tr class="{{ ($client->collection === null || $client->collection == 0) ? 'table-danger' : '' }}">
                                         <td>{{ $client->fullname }}</td>
                                         <td>₱{{ number_format($client->loan_amount, 2) }}</td>
                                         <td>₱{{ number_format($client->balance, 2) }}</td>
                                         <td>
-                                            {{ $client->collection !== null ? '₱' . number_format($client->collection, 2) : '-' }}
+                                            @if ($client->type === 'NO PAYMENT')
+                                                <span class="text-danger fw-bold">₱0.00</span>
+                                            @elseif ($client->collection !== null)
+                                                ₱{{ number_format($client->collection, 2) }}
+                                            @else
+                                                -
+                                            @endif
                                         </td>
-                                        <td>
-                                            {{ $client->type ?? '-' }}
-                                        </td>
+                                        <td>{{ $client->type ?? '-' }}</td>
                                         <td>{{ $client->created_by }}</td>
                                         <td>
+
                                             @if ($client->collection === null)
                                                 <form method="POST" action="{{ route('areas.payments.update', [$area->id, $reference_number]) }}" class="paymentForm">
                                                     @csrf
                                                     <input type="hidden" name="client_id" value="{{ $client->client_id }}">
+                                                    <input type="hidden" name="fullname" value="{{ $client->fullname }}">
+
                                                     <button type="button" class="btn btn-sm btn-success collectPaymentBtn">Collect Payment</button>
-                                                    <button type="button" class="btn btn-sm btn-warning">Remind Payment</button>
-                                                    <button type="button" class="btn btn-sm btn-danger">No Payment</button>
+                                                    <button type="button" class="btn btn-sm btn-warning remindPaymentBtn">Remind Payment</button>
+                                                    <button type="button" class="btn btn-sm btn-danger noPaymentBtn">No Payment</button>
                                                 </form>
+
+                                            @elseif ($client->collection == 0)
+                                                <span class="badge rounded-pill bg-danger">
+                                                    NO PAYMENT FOR THIS DAY
+                                                </span>
+
                                             @else
                                                 <span class="badge rounded-pill bg-success">
                                                     PAID FOR THIS DAY
                                                 </span>
                                             @endif
+
                                         </td>
                                     </tr>
                                     @endforeach
+
                                     </tbody>
 
 
@@ -209,6 +238,73 @@ $(document).ready(function() {
                 typeInput.type = 'hidden';
                 typeInput.name = 'type';
                 typeInput.value = result.value.type;
+
+                form.appendChild(amountInput);
+                form.appendChild(typeInput);
+
+                form.submit();
+            }
+        });
+    });
+
+    // ================================
+    // REMIND PAYMENT BUTTON
+    // ================================
+    $('.remindPaymentBtn').on('click', function () {
+        let form = $(this).closest('form')[0];
+        let fullname = $(form).find('input[name="fullname"]').val();
+
+        Swal.fire({
+            title: `Remind ${fullname} for payment?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, remind',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $(form).find('input[name="amount"], input[name="type"]').remove();
+
+                // Send REMINDER with type = REMINDER
+                let typeInput = document.createElement('input');
+                typeInput.type = 'hidden';
+                typeInput.name = 'type';
+                typeInput.value = 'REMINDER';
+
+                form.appendChild(typeInput);
+                form.submit();
+            }
+        });
+    });
+
+
+    // ================================
+    // NO PAYMENT BUTTON
+    // ================================
+    $('.noPaymentBtn').on('click', function () {
+        let form = $(this).closest('form')[0];
+        let fullname = $(form).find('input[name="fullname"]').val();
+
+        Swal.fire({
+            title: `Mark NO PAYMENT for ${fullname}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, mark as No Payment',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $(form).find('input[name="amount"], input[name="type"]').remove();
+
+                let amountInput = document.createElement('input');
+                amountInput.type = 'hidden';
+                amountInput.name = 'amount';
+                amountInput.value = 0;
+
+                let typeInput = document.createElement('input');
+                typeInput.type = 'hidden';
+                typeInput.name = 'type';
+                typeInput.value = 'NO PAYMENT';
 
                 form.appendChild(amountInput);
                 form.appendChild(typeInput);

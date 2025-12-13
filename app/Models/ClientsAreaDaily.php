@@ -10,6 +10,7 @@ class ClientsAreaDaily extends Model
     use HasFactory;
     protected $fillable = [
         'reference_number',
+        'collected_by',
         'due_date',
         'client_id',
         'client_loans_id',

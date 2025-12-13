@@ -109,9 +109,27 @@ class ClientsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'phone' => 'required|digits:11',
+            'address' => 'required|string|max:255',
+            'area_id' => 'required|exists:areas,id',
+            'gender' => 'required|string',
+        ]);
+
+        $client = Clients::findOrFail($id);
+
+        $client->update([
+            'fullname' => $request->fullname,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'area_id' => $request->area_id,
+            'gender' => $request->gender,
+        ]);
+
+        return redirect()->back()->with('success', 'Client updated successfully!');
     }
 
     /**

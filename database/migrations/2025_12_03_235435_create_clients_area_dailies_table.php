@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('clients_area_dailies', function (Blueprint $table) {
             $table->id();
             $table->string('reference_number');
+            $table->string('collected_by');
             $table->date('due_date');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->foreignId('client_loans_id')->constrained('clients_loans')->onDelete('cascade');

@@ -21,13 +21,24 @@
                 </svg>
                 <span class="notification-badge"></span>
             </button>
-            <div class="user-avatar" data-bs-toggle="dropdown">RV</div>
+            @php
+                $admin_user = Auth::guard('admin')->user();
+                $user_initial = $admin_user ? strtoupper(substr($admin_user->fullname, 0, 1)) : 'A';
+            @endphp
+            <div class="user-avatar" data-bs-toggle="dropdown">{{ $user_initial }}</div>
             <ul class="dropdown-menu dropdown-menu-end shadow">
                 <li><a class="dropdown-item" href="#">Profile</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="#">Logout</a></li>
+                <li>
+                    <form action="{{ route('admin.logout') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="dropdown-item d-flex gap-2 align-items-center">
+                            Logout
+                        </button>
+                    </form>
+                </li>
             </ul>
         </div>
     </div>
@@ -106,7 +117,7 @@
         </button>
 
         <div class="dropdown">
-            <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">RV</div>
+            <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">{{ $user_initial }}</div>
             <ul class="dropdown-menu dropdown-menu-end shadow">
                 <li><a class="dropdown-item d-flex gap-2 align-items-center" href="#">Profile</a></li>
                 <li>

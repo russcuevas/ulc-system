@@ -12,7 +12,11 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
+    <style>
+    .card-left-orange {
+        border-left: 5px solid #ff6b35 !important;
+    }
+    </style>
 </head>
 
 <body>
@@ -21,77 +25,53 @@
     <div class="main-content">
         <div class="row g-4 mb-4">
             <h4>Dashboard</h4>
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="card border-2 shadow-lg h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <span class="text-body-secondary fw-medium">Total Loans</span>
-                            <div class="icon-box bg-danger-subtle text-danger">
-                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
-                                    <path
-                                        d="M320 96H192L144.6 24.9C137.5 14.2 145.1 0 157.9 0H354.1c12.8 0 20.4 14.2 13.3 24.9L320 96zM192 128H320c3.8 2.5 8.1 5.3 13 8.4C389.7 172.7 512 250.9 512 416c0 53-43 96-96 96H96c-53 0-96-43-96-96C0 250.9 122.3 172.7 179 136.4l0 0 0 0c4.8-3.1 9.2-5.9 13-8.4zm84 88c0-11-9-20-20-20s-20 9-20 20v14c-7.6 1.7-15.2 4.4-22.2 8.5c-13.9 8.3-25.9 22.8-25.8 43.9c.1 20.3 12 33.1 24.7 40.7c11 6.6 24.7 10.8 35.6 14l1.7 .5c12.6 3.7 21.9 6.6 28.3 10.5c5.2 3.1 5.3 4.9 5.3 6.7c0 .6-.1 1.9-4.4 5.6c-3.5 3-9.5 5.8-18.8 7.5c-9.4 1.7-21.2 2.2-34.4-.3c-11.2-2.1-22.5-5.4-31.9-8.5l0 0 0 0c-2.1-.7-4.1-1.4-6-2c-10.5-3.5-21.8 2.2-25.3 12.7s2.2 21.8 12.7 25.3c1.9 .6 4 1.3 6.1 2.1l0 0 0 0 0 0c9.3 3.1 21.4 6.8 33.9 9.3V408c0 11 9 20 20 20s20-9 20-20V392.2c8.5-1.2 16.7-3.6 24.1-7.4c14.3-7.8 27.9-22.2 27.9-45.8c0-19.4-11-32.2-23.6-40.3c-11.2-7.2-25.7-11.8-37.8-15.5l-2.8-.9c-12-3.6-20.8-6.2-26.7-9.6c-4.8-2.8-4.8-4-4.8-5.6c0-.8 .1-1.8 3.8-5.1c3-2.6 8.2-5.3 16.4-6.8c8.1-1.5 18.3-1.9 30.2 .1c11.7 2 22.2 5.2 30.6 8.1l0 0 0 0 0 0c2.1 .7 4.1 1.4 6 2c10.5 3.5 21.7-2.2 25.2-12.6s-2.2-21.7-12.6-25.2c-2-.7-4.1-1.4-6.2-2.1c-9.5-3.3-20.8-6.8-33.8-9V216z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <h2 class="h3 fw-bold mb-1">₱45.2M</h2>
-                        <span class="text-success small"><i class="bi bi-arrow-up"></i> +1.5M in 2024</span>
-                    </div>
+            <div class="col-12 col-md-6 col-xl-4">
+    <div class="card border-2 shadow-lg h-100 card-left-orange">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="text-body-secondary fw-medium">Total Loans</span>
+                <div class="icon-box bg-danger-subtle text-danger">
+                    <i class="fa-solid fa-coins"></i>
                 </div>
             </div>
+            <h2 class="h3 fw-bold mb-1">₱{{ number_format($totalLoans, 2) }}</h2>
+            <span class="text-success small"><i class="bi bi-arrow-up"></i> +₱{{ number_format($loansTrend, 2) }} over 2024</span>
+        </div>
+    </div>
+</div>
 
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="card border-2 shadow-lg h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <span class="text-body-secondary fw-medium">Total Clients</span>
-                            <div class="icon-box bg-primary-subtle text-primary">
-                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 640 512">
-                                    <path
-                                        d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM609.3 512H471.4c5.4-9.4 8.6-20.3 8.6-32v-8c0-60.7-27.1-115.2-69.8-151.8c2.4-.1 4.7-.2 7.1-.2h61.4C567.8 320 640 392.2 640 481.3c0 17-13.8 30.7-30.7 30.7zM432 256c-31 0-59-12.6-79.3-32.9C372.4 196.5 384 163.6 384 128c0-26.8-6.6-52.1-18.3-74.3C384.3 40.1 407.2 32 432 32c61.9 0 112 50.1 112 112s-50.1 112-112 112z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <h2 class="h3 fw-bold mb-1">8,901</h2>
-                        <span class="text-success small">10% is in paid status</span>
-                    </div>
+<div class="col-12 col-md-6 col-xl-4">
+    <div class="card border-2 shadow-lg h-100 card-left-orange">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="text-body-secondary fw-medium">Total Clients</span>
+                <div class="icon-box bg-primary-subtle text-primary">
+                    <i class="fa-solid fa-users"></i>
                 </div>
             </div>
+            <h2 class="h3 fw-bold mb-1">{{ $totalClients }}</h2>
+            <span class="text-success small">+{{ $clientsTrend }} compared to 2024</span>
+        </div>
+    </div>
+</div>
 
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="card border-2 shadow-lg h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <span class="text-body-secondary fw-medium">Daily Collectibles</span>
-                            <div class="icon-box bg-success-subtle text-success">
-                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 512 512">
-                                    <path
-                                        d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <h2 class="h3 fw-bold mb-1">₱12,340</h2>
-                        <span class="text-danger small">15% overdue today</span>
-                    </div>
+<div class="col-12 col-md-6 col-xl-4">
+    <div class="card border-2 shadow-lg h-100 card-left-orange">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="text-body-secondary fw-medium">Daily Collections</span>
+                <div class="icon-box bg-info-subtle text-info">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
                 </div>
             </div>
+            <h2 class="h3 fw-bold mb-1">₱{{ number_format($dailyCollections, 2) }}</h2>
+            <span class="text-body-secondary small">
+                As of <span id="currentTime"></span>
+            </span>
+        </div>
+    </div>
+</div>
 
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="card border-2 shadow-lg h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <span class="text-body-secondary fw-medium">Daily Collections</span>
-                            <div class="icon-box bg-info-subtle text-info">
-                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 384 512">
-                                    <path
-                                        d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <h2 class="h3 fw-bold mb-1">₱10,450</h2>
-                        <span class="text-success small">25% above target</span>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="row g-4">
@@ -99,14 +79,22 @@
                 <div class="card border-2 shadow-lg h-100">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="card-title mb-0">Loan Portfolio Growth (Monthly Collections)</h5>
-                            <select class="form-select form-select-sm w-auto">
-                                <option>2025</option>
-                                <option>2024</option>
-                                <option>2023</option>
-                            </select>
-                        </div>
-                        <canvas id="portfolioChart" style="width:100%; max-height: 300px;"></canvas>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="card-title mb-0">Loan Analytics [Monthly Collections]</h5>
+</div>
+
+<form id="yearForm">
+    <select name="year" id="yearSelect" class="form-select form-select-sm w-auto">
+        @for ($y = date('Y'); $y >= date('Y') - 5; $y--)
+            <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
+        @endfor
+    </select>
+</form>
+
+</div>
+    <span class="text-success small">Total this year: ₱<span id="totalYearCollections">{{ number_format($totalYearCollections, 2) }}</span></span>
+
+<canvas id="portfolioChart" style="width:100%; max-height: 300px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -155,6 +143,88 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
+    {{-- CHART JS --}}
+<script>
+{
+    const html = document.documentElement;
+    const ctx = document.getElementById('portfolioChart')?.getContext('2d');
+    let portfolioChart;
+
+    function initChart(labels = [], data = []) {
+        if (!ctx) return;
+
+        const isDark = html.getAttribute('data-bs-theme') === 'dark';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+        const textColor = isDark ? '#e0e0e0' : '#666';
+
+        if (portfolioChart) portfolioChart.destroy();
+
+        portfolioChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Collections',
+                    data: data,
+                    borderColor: '#ff6b35',
+                    backgroundColor: 'rgba(255, 107, 53, 0.2)',
+                    tension: 0.35,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#ff6b35',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: gridColor },
+                        ticks: {
+                            color: textColor,
+                            callback: function(value) {
+                                return '₱' + value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: textColor }
+                    }
+                }
+            }
+        });
+    }
+
+const initialLabels = @json($labels);
+const initialData = @json(array_values($collectionsData));
+initChart(initialLabels, initialData);
+
+    // AJAX call when year changes
+    document.getElementById('yearSelect').addEventListener('change', function() {
+    const selectedYear = this.value;
+
+    $.ajax({
+        url: "{{ route('dashboard.chart-data') }}",
+        type: "GET",
+        data: { year: selectedYear },
+        success: function(response) {
+            initChart(response.labels, response.collections);
+            document.getElementById('totalYearCollections').textContent = response.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        },
+        error: function(err) {
+            console.error("Failed to fetch chart data:", err);
+        }
+    });
+});
+}
+</script>
+
+
+
     <script src="{{ asset('admin/assets/js/dashboard_chart.js') }}"></script>
     <script>
         toastr.options = {
@@ -168,7 +238,20 @@
             toastr.success("{{ session('success') }}");
         @endif
     </script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', month: 'long', day: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit', 
+                hour12: true 
+            };
+            document.getElementById('currentTime').textContent = now.toLocaleString('en-US', options);
+        }
 
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
 </body>
 
 </html>
