@@ -55,15 +55,14 @@
         .error-message {
             background-color: rgba(255, 0, 0, 0.1);
             border-left: 5px solid #e74c3c;
-            color: #c0392b; 
+            color: #c0392b;
             padding: 12px 15px;
             margin-bottom: 20px;
             border-radius: 4px;
             font-weight: 500;
             font-size: 15px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
-
     </style>
 </head>
 
@@ -100,9 +99,10 @@
 
                 @if ($errors->any())
                     <div class="error-message mb-4">
-                        {{ $errors->first() }}
+                        {!! $errors->first() !!}
                     </div>
                 @endif
+
 
                 <form method="POST" action="{{ route('admin.login-request') }}" class="needs-validation" novalidate>
                     @csrf
@@ -146,7 +146,8 @@
                 <!-- Utility Links -->
                 <div class="d-flex justify-content-between mt-3 fs-6">
                     <a href="#" class="text-primary text-decoration-none fw-medium"></a>
-                    <a href="{{ route('admin.forgot-password') }}" class="text-primary text-decoration-none fw-medium">Forgot password?</a>
+                    <a href="{{ route('admin.forgot-password') }}"
+                        class="text-primary text-decoration-none fw-medium">Forgot password?</a>
                 </div>
             </div>
         </div>

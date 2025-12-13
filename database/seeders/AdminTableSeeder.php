@@ -20,6 +20,7 @@ class AdminTableSeeder extends Seeder
             'phone' => '09123456789',
             'gender' => 'Male',
             'status' => 'verified',
+            'created_by' => 'Russel Vincent Cuevas'
         ]);
     }
 }

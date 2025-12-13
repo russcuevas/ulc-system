@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('gender');
             $table->string('status')->default('not verified');
+            $table->string('verification_token')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

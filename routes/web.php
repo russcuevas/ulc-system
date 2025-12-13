@@ -1,6 +1,7 @@
 <?php
 // Auth Routes Controller Imports
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\auth\AccountVerifications;
 
 // Admin Routes Controller Imports
 use App\Http\Controllers\admin\DashboardController;
@@ -30,6 +31,12 @@ Route::get('/forgot-password', [AuthController::class, 'ForgotPasswordPage'])->n
 Route::get('/login', [AuthController::class, 'LoginPage'])->name('admin.login');
 Route::post('/login-request', [AuthController::class, 'LoginRequest'])->name('admin.login-request');
 Route::post('/logout', [AuthController::class, 'Logout'])->name('admin.logout');
+
+// Mailer
+Route::get('/admin/verify/{token}', [AccountVerifications::class, 'AdminAccountVerification'])->name('admin.verify');
+Route::get('/admin/resend-verification/{admin}', [AccountVerifications::class, 'AdminAccountVerificationResend'])
+    ->name('admin.verification.resend')
+    ->middleware('signed');
 
 // Admin Routes
 Route::middleware('admin.auth')->group(function () {

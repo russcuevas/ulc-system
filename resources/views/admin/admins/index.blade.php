@@ -12,6 +12,8 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 </head>
 
 <body>
@@ -48,40 +50,48 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form id="addAdminForm" class="needs-validation" novalidate>
+                                    <form method="POST" action="{{ route('admins.store') }}" id="addAdminForm"
+                                        class="needs-validation" novalidate>
+                                        @csrf
                                         <div class="modal-body">
                                             <div class="row">
                                                 <!-- Left Column: Personal Info -->
                                                 <div class="col-md-6">
                                                     <h6 class="mb-3">Personal Information</h6>
                                                     <div class="mb-3">
-                                                        <label for="adminName" class="form-label">Full Name <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" id="adminName"
-                                                            name="adminName" required>
+                                                        <label for="adminName" class="form-label">Full Name <span
+                                                                style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <input type="text" class="form-control" name="fullname"
+                                                            required>
+
                                                         <div class="invalid-feedback">
                                                             Please enter full name.
                                                         </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="adminPhone" class="form-label">Phone <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" id="adminPhone"
-                                                            name="adminPhone" required pattern="\d{11}" minlength="11"
-                                                            maxlength="11">
+                                                        <label for="adminPhone" class="form-label">Phone <span
+                                                                style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <input type="text" class="form-control" name="phone"
+                                                            required pattern="\d{11}" minlength="11" maxlength="11">
+
                                                         <div class="invalid-feedback">
                                                             Please enter a valid phone number (11 digits required).
                                                         </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label d-block">Gender <span style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <label class="form-label d-block">Gender <span
+                                                                style="color: rgb(126, 30, 30)">*</span></label>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="radio"
-                                                                name="adminGender" id="genderMale" value="Male" checked>
+                                                                name="gender" value="Male" checked>
+
                                                             <label class="form-check-label"
                                                                 for="genderMale">Male</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="radio"
-                                                                name="adminGender" id="genderFemale" value="Female">
+                                                                name="gender" value="Female">
+
                                                             <label class="form-check-label"
                                                                 for="genderFemale">Female</label>
                                                         </div>
@@ -92,26 +102,31 @@
                                                 <div class="col-md-6">
                                                     <h6 class="mb-3">Account Information</h6>
                                                     <div class="mb-3">
-                                                        <label for="adminEmail" class="form-label">Email <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="email" class="form-control" id="adminEmail"
-                                                            name="adminEmail" required>
+                                                        <label for="adminEmail" class="form-label">Email <span
+                                                                style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <input type="email" class="form-control" name="email"
+                                                            required>
+
                                                         <div class="invalid-feedback">
                                                             Please enter a valid email.
                                                         </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="adminPassword" class="form-label">Password <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="password" class="form-control" id="adminPassword"
-                                                            name="adminPassword" required minlength="6">
+                                                        <label for="adminPassword" class="form-label">Password <span
+                                                                style="color: rgb(126, 30, 30)">*</span></label>
+                                                        <input type="password" class="form-control"
+                                                            id="adminPassword" name="password" required
+                                                            minlength="6">
                                                         <div class="invalid-feedback">
                                                             Password must be at least 6 characters.
                                                         </div>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="adminConfirmPassword" class="form-label">Confirm
-                                                            Password <span style="color: rgb(126, 30, 30)">*</span></label>
+                                                            Password <span
+                                                                style="color: rgb(126, 30, 30)">*</span></label>
                                                         <input type="password" class="form-control"
-                                                            id="adminConfirmPassword" name="adminConfirmPassword"
+                                                            id="adminConfirmPassword" name="password_confirmation"
                                                             required>
                                                         <div class="invalid-feedback" id="confirmPasswordFeedback">
                                                             Passwords do not match.
@@ -147,36 +162,29 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Juan Dela Cruz</td>
-                                            <td>russelsample@gmail.com</td>
-                                            <td>09495748302</td>
-                                            <td><span class="badge rounded-pill bg-success">Verified</span></td>
-                                            <td>2025-11-28 - 5:00pm <span class="badge rounded-pill bg-success">by: Russel Admin</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-warning" title="View Details">Update <i
-                                                        class="fas fa-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-danger" title="View Details">Delete<i
-                                                        class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                                                                <tr>
-                                            <td>Juan Dela Cruz</td>
-                                            <td>russelsample@gmail.com</td>
-                                            <td>09495748302</td>
-                                            <td><span class="badge rounded-pill bg-danger">Not Verifed</span></td>
-                                            <td>2025-11-28 - 5:00pm <span class="badge rounded-pill bg-success">by: Russel Admin</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-warning" title="View Details">Update <i
-                                                        class="fas fa-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-danger" title="View Details">Delete<i
-                                                        class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        @foreach ($admins as $admin)
+                                            <tr>
+                                                <td>{{ $admin->fullname }}</td>
+                                                <td>{{ $admin->email }}</td>
+                                                <td>{{ $admin->phone }}</td>
+                                                <td>
+                                                    @if ($admin->status === 'verified')
+                                                        <span class="badge rounded-pill bg-success">Verified</span>
+                                                    @else
+                                                        <span class="badge rounded-pill bg-danger">Not Verified</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $admin->created_at }} <span
+                                                        class="badge rounded-pill bg-success">by:
+                                                        {{ $admin->created_by }}</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-warning" title="Update">Update <i
+                                                            class="fas fa-pencil"></i></button>
+                                                    <button class="btn btn-sm btn-danger" title="Delete">Delete <i
+                                                            class="fas fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -187,18 +195,22 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
     <script src="{{ asset('admin/assets/js/dashboard_chart.js') }}"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('.js-basic-example').DataTable({
-                responsive: true,       // Makes table responsive
-                pageLength: 10,         // Default rows per page
-                lengthMenu: [5, 10, 25, 50],  // Rows per page options
-                order: [[2, 'desc']],   // Default sorting (by Date Requested)
+                responsive: true, // Makes table responsive
+                pageLength: 10, // Default rows per page
+                lengthMenu: [5, 10, 25, 50], // Rows per page options
+                order: [
+                    [2, 'desc']
+                ], // Default sorting (by Date Requested)
             });
         });
     </script>
@@ -231,7 +243,18 @@
             })
         })();
     </script>
+    <script>
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            timeOut: 4000,
+            positionClass: "toast-top-right"
+        };
 
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+    </script>
 </body>
 
 </html>

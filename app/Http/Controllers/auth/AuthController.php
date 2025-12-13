@@ -5,6 +5,7 @@ namespace App\Http\Controllers\auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 class AuthController extends Controller
 {
@@ -24,6 +25,16 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         
         if (Auth::guard('admin')->attempt($credentials)) {
+            $admin = Auth::guard('admin')->user();
+
+            if ($admin->status !== 'verified'){
+                $verificationUrl = URL::signedRoute('admin.verification.resend', ['admin' => $admin->id]);
+
+                return back()->withErrors([
+                'email' => 'Your account is not verified yet. <a href="' . $verificationUrl . '">resend code again</a>'
+                ]);
+            }
+            
             return redirect()
                 ->route('admin.dashboard')
                 ->with('success', 'Welcome back, ' . Auth::guard('admin')->user()->fullname . '!');

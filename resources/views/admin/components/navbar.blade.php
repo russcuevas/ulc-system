@@ -1,7 +1,7 @@
 <button id="sidebarToggle" class="sidebar-toggle-btn d-none d-lg-flex">
     <i class="fa-solid fa-angle-left"></i>
 </button>
-    
+
 {{-- MOBILE SHOW --}}
 <nav class="navbar navbar-expand-lg bg-body shadow-sm d-lg-none mb-3 sticky-top">
     <div class="container-fluid">
@@ -65,26 +65,23 @@
         Ultraritz Lending<br>Corporation <i class="fa-solid fa-coins"></i>
     </div>
     <div class="nav flex-column nav-pills px-3 mt-2">
-        <a href="{{ route('admin.dashboard') }}" 
-           class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+        <a href="{{ route('admin.dashboard') }}"
+            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <i class="fa-solid fa-house"></i>
             Dashboard
         </a>
 
-        <a href="{{ route('admins.index') }}" 
-           class="nav-link {{ request()->routeIs('admins.*') ? 'active' : '' }}">
+        <a href="{{ route('admins.index') }}" class="nav-link {{ request()->routeIs('admins.*') ? 'active' : '' }}">
             <i class="fa-solid fa-user-lock"></i>
             Admins Information
         </a>
 
-        <a href="{{ route('clients.index') }}" 
-        class="nav-link {{ request()->routeIs('clients.*') ? 'active' : '' }}">
+        <a href="{{ route('clients.index') }}" class="nav-link {{ request()->routeIs('clients.*') ? 'active' : '' }}">
             <i class="fa-solid fa-users"></i>
             Clients Information
         </a>
 
-        <a href="{{ route('areas.index') }}"
-           class="nav-link {{ request()->routeIs('areas.*') ? 'active' : '' }}">
+        <a href="{{ route('areas.index') }}" class="nav-link {{ request()->routeIs('areas.*') ? 'active' : '' }}">
             <i class="fa-solid fa-hand-holding-dollar"></i>
             Financial Counselor Area (FC)
         </a>
@@ -130,7 +127,7 @@
                             Logout
                         </button>
                     </form>
-                </li>            
+                </li>
             </ul>
         </div>
     </div>

@@ -57,29 +57,36 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($clients as $client)
-                                        <tr>
-                                            <td>{{ $client->fullname }}</td>
-                                            <td>{{ $client->phone }}</td>
-                                            <td>{{ $client->address }}</td>
-                                            <td>{{ $client->area_name }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F j, Y - h:i A') }} <span class="badge rounded-pill bg-success">by:
-                                                    {{ $client->created_by }}</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-warning" title="Edit"
-                                                    data-bs-toggle="modal" data-bs-target="#editClientModal{{ $client->id }}">
-                                                    <i class="fas fa-pencil"></i>
-                                                </button>
-                                                <form action="{{ route('clients.destroy', $client->id) }}" method="POST" class="delete-client-form" style="display:inline-block;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-client-id="{{ $client->id }}">
-                                                        <i class="fas fa-trash"></i>
+                                            <tr>
+                                                <td>{{ $client->fullname }}</td>
+                                                <td>{{ $client->phone }}</td>
+                                                <td>{{ $client->address }}</td>
+                                                <td>{{ $client->area_name }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F j, Y - h:i A') }}
+                                                    <span class="badge rounded-pill bg-success">by:
+                                                        {{ $client->created_by }}</span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-warning" title="Edit"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editClientModal{{ $client->id }}">
+                                                        <i class="fas fa-pencil"></i>
                                                     </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        {{-- UPDATE MODAL --}}
-                                        @include('admin.clients.edit_modal')
+                                                    <form action="{{ route('clients.destroy', $client->id) }}"
+                                                        method="POST" class="delete-client-form"
+                                                        style="display:inline-block;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-outline-danger delete-btn"
+                                                            data-client-id="{{ $client->id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {{-- UPDATE MODAL --}}
+                                            @include('admin.clients.edit_modal')
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -142,28 +149,28 @@
         @endif
     </script>
     <script>
-    $(document).ready(function() {
-        $('.delete-btn').click(function(e) {
-            e.preventDefault();
+        $(document).ready(function() {
+            $('.delete-btn').click(function(e) {
+                e.preventDefault();
 
-            var form = $(this).closest('form');
+                var form = $(this).closest('form');
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
 

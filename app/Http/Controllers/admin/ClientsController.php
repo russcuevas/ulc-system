@@ -18,10 +18,21 @@ class ClientsController extends Controller
     public function index()
     {
         $areas = DB::table('areas')->get();
+
         $clients = DB::table('clients')
-        ->leftJoin('areas', 'clients.area_id', '=', 'areas.id')
-        ->select('clients.*', 'areas.area_name as area_name')
-        ->get();
+            ->leftJoin('areas', 'clients.area_id', '=', 'areas.id')
+            ->leftJoin('clients_loans', 'clients.id', '=', 'clients_loans.client_id')
+            ->select(
+                'clients.*',
+                'areas.area_name',
+                'clients_loans.loan_from',
+                'clients_loans.loan_to',
+                'clients_loans.loan_amount',
+                'clients_loans.loan_terms',
+                'clients_loans.status'
+            )
+            ->get();
+
         return view('admin.clients.index', compact('areas', 'clients'));
     }
 

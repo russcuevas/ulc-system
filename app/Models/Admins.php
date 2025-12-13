@@ -16,6 +16,8 @@ class Admins extends Authenticatable
         'phone',
         'gender',
         'status',
+        'verification_token',
+        'created_by',
     ];
 
     protected $hidden = [
