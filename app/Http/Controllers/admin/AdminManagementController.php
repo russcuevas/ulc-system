@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 
@@ -88,7 +89,33 @@ class AdminManagementController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('admins', 'email')->ignore($id)
+            ],
+            'phone' => 'required|digits:11',
+            'gender' => 'required|in:Male,Female',
+            'password' => 'nullable|min:6|confirmed',
+        ]);
+
+        $data = [
+            'fullname' => $request->fullname,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'gender' => $request->gender,
+            'updated_at' => now(),
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        DB::table('admins')->where('id', $id)->update($data);
+
+        return redirect()->back()->with('success', 'Admin updated successfully!');
     }
 
     /**
@@ -96,7 +123,9 @@ class AdminManagementController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::table('admins')->where('id', $id)->delete();
+
+        return redirect()->back()->with('success', 'Admin deleted successfully!');
     }
 
 

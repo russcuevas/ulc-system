@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
     <style>
         .bg-ulc-primary {
             background-image: url("https://t4.ftcdn.net/jpg/04/32/76/65/360_F_432766524_GEG8dDw2lRcwsthAOFP57fFhQ3R2cDki.jpg");
@@ -77,8 +79,9 @@
                     FORGOT PASSWORD
                 </h2>
 
-                <form class="needs-validation" novalidate>
-                    <div class="mb-4">
+                <form method="POST" action="{{ route('admin.forgot-password.send') }}" class="needs-validation"
+                    novalidate>
+                    @csrf <div class="mb-4">
                         <label for="email" class="form-label fw-medium">
                             Email Address <span style="color: rgb(126, 30, 30)">*</span>
                         </label>
@@ -93,7 +96,7 @@
 
                         <!-- Request Access Code Button (Large Column) -->
                         <div class="col-8">
-                            <button type="submit"
+                            <button id="resetPasswordBtn" type="submit"
                                 class="btn btn-primary w-100 d-flex justify-content-center align-items-center py-2 rounded-3 fw-medium shadow">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -102,7 +105,10 @@
                                     <polyline points="10 17 15 12 10 7" />
                                     <line x1="15" x2="3" y1="12" y2="12" />
                                 </svg>
-                                <span>Request access code</span>
+                                <span id="btn-text">Request access code</span>
+                                <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2 d-none"
+                                    role="status" aria-hidden="true"></span>
+
                             </button>
                         </div>
 
@@ -128,28 +134,61 @@
     </div>
 
     <!-- Bootstrap Bundle JS (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script>
-        (() => {
-            'use strict'
-
-            const forms = document.querySelectorAll('.needs-validation')
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('.needs-validation');
 
             Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-
+                form.addEventListener('submit', function(event) {
+                    // Run Bootstrap validation
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
+                    } else {
+                        // Disable the button and show spinner **only if form is valid**
+                        const btn = form.querySelector('button[type="submit"]');
+                        const btnText = btn.querySelector('#btn-text');
+                        const btnSpinner = btn.querySelector('#btnSpinner');
+
+                        btn.disabled = true;
+                        btnSpinner.classList.remove('d-none');
+                        btnText.textContent = 'Sending...';
                     }
 
                     form.classList.add('was-validated');
-                }, false)
-            })
-        })();
+                }, false);
+            });
+        });
     </script>
+
+    <script>
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            timeOut: 4000,
+            positionClass: "toast-top-right"
+        };
+
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @elseif (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
+
+    @if ($errors->any())
+        <script>
+            toastr.error(`{!! implode('<br>', $errors->all()) !!}`);
+        </script>
+    @endif
+
 </body>
 
 </html>

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Clients;
 use App\Models\ClientsAreaDaily;
 use App\Models\ClientsLoans;
+use Illuminate\Support\Facades\DB;
+
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -50,6 +52,19 @@ $labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
         // Total collections for the year
         $totalYearCollections = array_sum($collectionsData);
 
+        $activities = DB::table('activities')
+            ->leftJoin('admins', 'activities.admin_id', '=', 'admins.id')
+            ->select(
+                'activities.id',
+                'activities.description',
+                'activities.color',
+                'activities.created_at',
+                'admins.fullname as admin_name'
+            )
+            ->orderBy('activities.created_at', 'desc')
+            ->limit(10)
+            ->get();
+
         return view('admin.dashboard.index', compact(
             'totalLoans',
             'loansTrend',
@@ -61,7 +76,8 @@ $labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
             'previousYear',
             'labels',
             'collectionsData',
-            'totalYearCollections' // pass to view
+            'totalYearCollections',
+            'activities' // pass to view
         ))->with('year', $currentYear);
     }
 

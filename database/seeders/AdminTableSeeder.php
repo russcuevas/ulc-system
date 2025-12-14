@@ -15,7 +15,7 @@ class AdminTableSeeder extends Seeder
     {
         Admins::create([
             'fullname' => 'Admin',
-            'email' => 'admin@gmail.com',
+            'email' => 'russelcuevas0@gmail.com',
             'password' => Hash::make('123456789'),
             'phone' => '09123456789',
             'gender' => 'Male',

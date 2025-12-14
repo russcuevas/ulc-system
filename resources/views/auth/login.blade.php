@@ -111,7 +111,7 @@
                             Email Address <span style="color: rgb(126, 30, 30)">*</span>
                         </label>
                         <input type="email" id="email" name="email" placeholder="Email Address"
-                            class="form-control rounded-3 shadow-sm" required>
+                            class="form-control rounded-3 shadow-sm" required value="{{ old('email') }}">
                         <div class="invalid-feedback">
                             Please enter your email address.
                         </div>
@@ -130,7 +130,7 @@
                     </div>
 
                     <!-- Login Button -->
-                    <button type="submit"
+                    <button id="loginBtn" type="submit"
                         class="btn btn-primary w-100 d-flex justify-content-center align-items-center py-2 rounded-3 fw-medium shadow">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -139,7 +139,10 @@
                             <polyline points="10 17 15 12 10 7" />
                             <line x1="15" x2="3" y1="12" y2="12" />
                         </svg>
-                        <span>Login</span>
+                        <span id="loginBtnText">Login</span>
+                        <span id="loginBtnSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"
+                            aria-hidden="true"></span>
+
                     </button>
                 </form>
 
@@ -158,23 +161,30 @@
         xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script>
-        (() => {
-            'use strict'
-
-            const forms = document.querySelectorAll('.needs-validation')
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('.needs-validation');
 
             Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-
+                form.addEventListener('submit', function(event) {
+                    // Bootstrap validation
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
+                    } else {
+                        // Disable the login button and show spinner
+                        const btn = form.querySelector('#loginBtn');
+                        const btnText = btn.querySelector('#loginBtnText');
+                        const btnSpinner = btn.querySelector('#loginBtnSpinner');
+
+                        btn.disabled = true;
+                        btnSpinner.classList.remove('d-none');
+                        btnText.textContent = 'Logging in...';
                     }
 
                     form.classList.add('was-validated');
-                }, false)
-            })
-        })();
+                }, false);
+            });
+        });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

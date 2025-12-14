@@ -2,6 +2,7 @@
 // Auth Routes Controller Imports
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\auth\AccountVerifications;
+use App\Http\Controllers\auth\ForgotPassword;
 
 // Admin Routes Controller Imports
 use App\Http\Controllers\admin\DashboardController;
@@ -27,10 +28,18 @@ Route::get('/', function () {
 });
 
 //Auth Routes
-Route::get('/forgot-password', [AuthController::class, 'ForgotPasswordPage'])->name('admin.forgot-password');
 Route::get('/login', [AuthController::class, 'LoginPage'])->name('admin.login');
 Route::post('/login-request', [AuthController::class, 'LoginRequest'])->name('admin.login-request');
 Route::post('/logout', [AuthController::class, 'Logout'])->name('admin.logout');
+
+//Auth Forgot Password
+Route::get('/forgot-password', [ForgotPassword::class, 'ForgotPasswordPage'])->name('admin.forgot-password');
+Route::post('/forgot-password', [ForgotPassword::class, 'ForgotPasswordSendCode'])->name('admin.forgot-password.send');
+
+Route::get('/reset-password', [ForgotPassword::class, 'ResetPasswordPage'])->name('admin.reset-password');
+Route::post('/reset-password/verify', [ForgotPassword::class, 'VerifyCode'])->name('admin.reset-password.verify');
+Route::post('/reset-password', [ForgotPassword::class, 'ResetPasswordSubmit'])->name('admin.reset-password.submit');
+
 
 // Mailer
 Route::get('/admin/verify/{token}', [AccountVerifications::class, 'AdminAccountVerification'])->name('admin.verify');

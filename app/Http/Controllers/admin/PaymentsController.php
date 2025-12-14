@@ -5,6 +5,9 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Activity;
+use Carbon\Carbon;
+
 
 class PaymentsController extends Controller
 {
@@ -67,6 +70,10 @@ class PaymentsController extends Controller
             )
             ->get();
 
+        if ($clients->isEmpty()) {
+            return redirect()->back()->with('error', 'No clients with that day.');
+        }
+
         foreach ($clients as $client) {
             DB::table('clients_area_dailies')->insert([
                 'reference_number' => $reference_number,
@@ -106,121 +113,60 @@ class PaymentsController extends Controller
     }
 
     public function UpdatePayment(Request $request, $area_id, $reference_number)
-    {
-        $request->validate([
-            'client_id' => 'required|integer|exists:clients,id',
-            'type' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'client_id' => 'required|integer|exists:clients,id',
+        'type'      => 'required|string',
+        'amount'    => 'nullable|numeric',
+    ]);
 
-        $clientId = $request->client_id;
-        $amount = $request->amount ?? null;
-        $type = $request->type;
-        $userName = auth()->guard('admin')->user()->fullname ?? 'System';
+    $clientId = $request->client_id;
+    $amount   = $request->amount ?? null;
+    $type     = $request->type;
+    $userName = auth()->guard('admin')->user()->fullname ?? 'System';
 
-        $dailyPayment = DB::table('clients_area_dailies')
-            ->where('reference_number', $reference_number)
-            ->where('client_id', $clientId)
-            ->first();
+    $dailyPayment = DB::table('clients_area_dailies')
+        ->where('reference_number', $reference_number)
+        ->where('client_id', $clientId)
+        ->first();
 
-        if (!$dailyPayment) {
-            return redirect()->back()->with('error', 'Payment record not found for this client.');
-        }
+    if (!$dailyPayment) {
+        return redirect()->back()->with('error', 'Payment record not found for this client.');
+    }
 
-        $clientLoan = DB::table('clients_loans')
-            ->where('id', $dailyPayment->client_loans_id)
-            ->first();
+    $due_date = $dailyPayment->due_date;
 
-        $client = DB::table('clients')->where('id', $clientId)->first();
-        // $phone_number = $client->phone ?? null; // SMS temporarily disabled
+    $clientLoan = DB::table('clients_loans')
+        ->where('id', $dailyPayment->client_loans_id)
+        ->first();
 
-        if ($type === 'REMINDER') {
+    $client = DB::table('clients')->where('id', $clientId)->first();
+    $phone_number = $client->phone ?? null;
 
-            // $message = "Hello {$client->fullname}! Paalala lang po, wala pa kaming natatanggap na payment ngayong araw. Salamat po!";
+    /*
+    |--------------------------------------------------------------------------
+    | REMINDER
+    |--------------------------------------------------------------------------
+    */
+    if ($type === 'REMINDER') {
 
-            // SMS sending temporarily disabled
-            /*
-            if ($phone_number) {
-                $phone_number = preg_replace('/[^0-9]/', '', $phone_number);
-                if (preg_match('/^09\d{9}$/', $phone_number)) {
-                    $phone_number = '63' . substr($phone_number, 1);
-                }
-                $ch = curl_init();
-                $parameters = [
-                    'apikey' => 'b2a42d09e5cd42585fcc90bf1eeff24e',
-                    'number' => $phone_number,
-                    'message' => $message,
-                    'sendername' => 'BPTOCEANUS'
-                ];
-                curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_exec($ch);
-                curl_close($ch);
-            }
-            */
+        $message = "Hello {$client->fullname}! Paalala lang po, wala pa kaming natatanggap na payment ngayong {$due_date}. Salamat po!";
 
-            return redirect()->back()->with('success', 'Reminder processed successfully!');
-        }
-
-        if ($type === 'NO PAYMENT') {
-
-            DB::table('clients_area_dailies')
-                ->where('id', $dailyPayment->id)
-                ->update([
-                    'collection' => 0,
-                    'type' => 'NO PAYMENT',
-                    'created_by' => $userName,
-                    'updated_at' => now(),
-                ]);
-
-            return redirect()->back()->with('success', 'Marked as NO PAYMENT!');
-        }
-
-        $request->validate([
-            'amount' => 'required|numeric|min:0.01',
-            'type' => 'required|string|in:GCASH,CHEQUE,CASH',
-        ]);
-
-        // $message = "Hello {$client->fullname}! Your payment of ₱" . number_format($amount, 2) .
-        //     " via {$type} has been received. Remaining balance: ₱" .
-        //     number_format($clientLoan->balance - $amount, 2) . ".";
-
-        DB::table('clients_area_dailies')
-            ->where('id', $dailyPayment->id)
-            ->update([
-                'collection' => $amount,
-                'type' => $type,
-                'created_by' => $userName,
-                'updated_at' => now(),
-            ]);
-
-        if ($clientLoan) {
-            $newBalance = max(0, $clientLoan->balance - $amount);
-
-            DB::table('clients_loans')
-                ->where('id', $clientLoan->id)
-                ->update([
-                    'balance' => $newBalance,
-                    'status' => $newBalance == 0 ? 'PAID' : $clientLoan->status,
-                    'updated_at' => now(),
-                ]);
-        }
-
-        // SMS sending temporarily disabled
-        /*
         if ($phone_number) {
             $phone_number = preg_replace('/[^0-9]/', '', $phone_number);
+
             if (preg_match('/^09\d{9}$/', $phone_number)) {
                 $phone_number = '63' . substr($phone_number, 1);
             }
+
             $ch = curl_init();
             $parameters = [
-                'apikey' => 'b2a42d09e5cd42585fcc90bf1eeff24e',
-                'number' => $phone_number,
-                'message' => $message,
+                'apikey'     => 'b2a42d09e5cd42585fcc90bf1eeff24e',
+                'number'     => $phone_number,
+                'message'    => $message,
                 'sendername' => 'BPTOCEANUS'
             ];
+
             curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
@@ -228,8 +174,109 @@ class PaymentsController extends Controller
             curl_exec($ch);
             curl_close($ch);
         }
-        */
 
-        return redirect()->back()->with('success', 'Payment collected successfully!');
+        DB::table('activities')->insert([
+            'description' => "Client {$client->fullname}, remind not paid for " 
+                . Carbon::parse($due_date)->format('F d, Y') . ".",
+            'admin_id'    => auth()->guard('admin')->id(),
+            'color'       => 'bg-danger',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Reminder sent successfully!');
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NO PAYMENT
+    |--------------------------------------------------------------------------
+    */
+    if ($type === 'NO PAYMENT') {
+
+        DB::table('clients_area_dailies')
+            ->where('id', $dailyPayment->id)
+            ->update([
+                'collection' => 0,
+                'type'       => 'NO PAYMENT',
+                'created_by' => $userName,
+                'updated_at' => now(),
+            ]);
+
+        return redirect()->back()->with('success', 'Marked as NO PAYMENT!');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAYMENT
+    |--------------------------------------------------------------------------
+    */
+    $request->validate([
+        'amount' => 'required|numeric|min:0.01',
+        'type'   => 'required|string|in:GCASH,CHEQUE,CASH',
+    ]);
+
+    $message = "Hello {$client->fullname}! Your payment of ₱" . number_format($amount, 2) .
+        " via {$type} has been received. Remaining balance: ₱" .
+        number_format(max(0, $clientLoan->balance - $amount), 2) . ".";
+
+    DB::table('clients_area_dailies')
+        ->where('id', $dailyPayment->id)
+        ->update([
+            'collection' => $amount,
+            'type'       => $type,
+            'created_by' => $userName,
+            'updated_at' => now(),
+        ]);
+
+    if ($clientLoan) {
+        $newBalance = max(0, $clientLoan->balance - $amount);
+
+        DB::table('clients_loans')
+            ->where('id', $clientLoan->id)
+            ->update([
+                'balance'    => $newBalance,
+                'status'     => $newBalance == 0 ? 'PAID' : $clientLoan->status,
+                'updated_at' => now(),
+            ]);
+    }
+
+    if ($phone_number) {
+        $phone_number = preg_replace('/[^0-9]/', '', $phone_number);
+
+        if (preg_match('/^09\d{9}$/', $phone_number)) {
+            $phone_number = '63' . substr($phone_number, 1);
+        }
+
+        $ch = curl_init();
+        $parameters = [
+            'apikey'     => 'b2a42d09e5cd42585fcc90bf1eeff24e',
+            'number'     => $phone_number,
+            'message'    => $message,
+            'sendername' => 'BPTOCEANUS'
+        ];
+
+        curl_setopt($ch, CURLOPT_URL, 'https://semaphore.co/api/v4/messages');
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+
+    DB::table('activities')->insert([
+        'description' => "Client {$client->fullname}, marked as paid ₱" 
+            . number_format($amount, 2) 
+            . " via {$type} for " 
+            . \Carbon\Carbon::parse($due_date)->format('F d, Y') . ".",
+        'admin_id'    => auth()->guard('admin')->id(),
+        'color'       => 'bg-success',
+        'created_at'  => now(),
+        'updated_at'  => now(),
+    ]);
+
+
+    return redirect()->back()->with('success', 'Payment collected successfully!');
+}
+
 }

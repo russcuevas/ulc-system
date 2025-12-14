@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Areas;
 use App\Models\Clients;
 use App\Models\ClientsLoans;
+use App\Models\Activity;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -97,6 +98,15 @@ class ClientsController extends Controller
             'status'      => 'unpaid',
             'created_by' => auth()->guard('admin')->user()->fullname ?? 'System',
         ]);
+
+        DB::table('activities')->insert([
+            'description' => "New added client {$client->fullname}.",
+            'admin_id'    => auth()->guard('admin')->id(),
+            'color'       => 'bg-success',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
 
         return redirect()->back()->with('success', 'Client successfully created!');
     }

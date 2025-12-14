@@ -40,10 +40,10 @@ class AuthController extends Controller
                 ->with('success', 'Welcome back, ' . Auth::guard('admin')->user()->fullname . '!');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
-    }
+        return redirect()->back()
+            ->withErrors(['email' => 'The provided credentials do not match our records.'])
+            ->withInput();
+        }
 
     public function Logout(Request $request)
     {
@@ -53,10 +53,5 @@ class AuthController extends Controller
         return redirect()
         ->route('admin.login')
         ->with('success', 'Logged out successfully.');
-    }
-
-    public function ForgotPasswordPage()
-    {
-        return view('auth.forgot-password');
     }
 }

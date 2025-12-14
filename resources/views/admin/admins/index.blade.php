@@ -41,112 +41,7 @@
                         </div>
 
                         <!-- Add Admin Modal -->
-                        <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-top modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addAdminModalLabel">Add Admin</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <form method="POST" action="{{ route('admins.store') }}" id="addAdminForm"
-                                        class="needs-validation" novalidate>
-                                        @csrf
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <!-- Left Column: Personal Info -->
-                                                <div class="col-md-6">
-                                                    <h6 class="mb-3">Personal Information</h6>
-                                                    <div class="mb-3">
-                                                        <label for="adminName" class="form-label">Full Name <span
-                                                                style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" name="fullname"
-                                                            required>
-
-                                                        <div class="invalid-feedback">
-                                                            Please enter full name.
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="adminPhone" class="form-label">Phone <span
-                                                                style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" name="phone"
-                                                            required pattern="\d{11}" minlength="11" maxlength="11">
-
-                                                        <div class="invalid-feedback">
-                                                            Please enter a valid phone number (11 digits required).
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label d-block">Gender <span
-                                                                style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="gender" value="Male" checked>
-
-                                                            <label class="form-check-label"
-                                                                for="genderMale">Male</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="gender" value="Female">
-
-                                                            <label class="form-check-label"
-                                                                for="genderFemale">Female</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Right Column: Account Info -->
-                                                <div class="col-md-6">
-                                                    <h6 class="mb-3">Account Information</h6>
-                                                    <div class="mb-3">
-                                                        <label for="adminEmail" class="form-label">Email <span
-                                                                style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="email" class="form-control" name="email"
-                                                            required>
-
-                                                        <div class="invalid-feedback">
-                                                            Please enter a valid email.
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="adminPassword" class="form-label">Password <span
-                                                                style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="password" class="form-control"
-                                                            id="adminPassword" name="password" required
-                                                            minlength="6">
-                                                        <div class="invalid-feedback">
-                                                            Password must be at least 6 characters.
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="adminConfirmPassword" class="form-label">Confirm
-                                                            Password <span
-                                                                style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="password" class="form-control"
-                                                            id="adminConfirmPassword" name="password_confirmation"
-                                                            required>
-                                                        <div class="invalid-feedback" id="confirmPasswordFeedback">
-                                                            Passwords do not match.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-
-                                </div>
-                            </div>
-                        </div>
-
-
+                        @include('admin.admins.add_modal')
                         <div class="card-body p-4">
                             <div class="table-responsive">
                                 <table class="table table-hover table-striped js-basic-example dataTable"
@@ -178,12 +73,26 @@
                                                         class="badge rounded-pill bg-success">by:
                                                         {{ $admin->created_by }}</span></td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-warning" title="Update">Update <i
-                                                            class="fas fa-pencil"></i></button>
-                                                    <button class="btn btn-sm btn-danger" title="Delete">Delete <i
-                                                            class="fas fa-trash"></i></button>
+                                                    <button class="btn btn-sm btn-outline-warning"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#updateAdminModal{{ $admin->id }}">
+                                                        <i class="fas fa-pencil"></i>
+                                                    </button>
+
+                                                    <form action="{{ route('admins.destroy', $admin->id) }}"
+                                                        method="POST" class="delete-admin-form"
+                                                        style="display:inline-block;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-outline-danger delete-btn"
+                                                            data-admin-id="{{ $admin->id }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
+                                            @include('admin.admins.edit_modal')
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -216,33 +125,55 @@
     </script>
     <script>
         (() => {
-            'use strict'
+            'use strict';
 
-            const forms = document.querySelectorAll('.needs-validation')
+            // Select all forms with validation
+            const forms = document.querySelectorAll('.needs-validation');
 
             Array.from(forms).forEach(form => {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const btnText = submitBtn.querySelector('.btn-text');
+                const spinner = submitBtn.querySelector('.spinner-border');
+
                 form.addEventListener('submit', event => {
+                    event.preventDefault(); // prevent default for custom validation
+
+                    // Password match check
                     const password = form.querySelector('#adminPassword');
                     const confirmPassword = form.querySelector('#adminConfirmPassword');
                     const confirmFeedback = form.querySelector('#confirmPasswordFeedback');
 
-                    if (password.value !== confirmPassword.value) {
-                        confirmPassword.setCustomValidity("Passwords do not match");
-                        confirmFeedback.textContent = "Passwords do not match.";
-                    } else {
-                        confirmPassword.setCustomValidity("");
+                    if (password && confirmPassword) {
+                        if (password.value !== confirmPassword.value) {
+                            confirmPassword.setCustomValidity("Passwords do not match");
+                            if (confirmFeedback) confirmFeedback.textContent =
+                            "Passwords do not match.";
+                        } else {
+                            confirmPassword.setCustomValidity("");
+                        }
                     }
 
+                    // Check form validity
                     if (!form.checkValidity()) {
-                        event.preventDefault();
                         event.stopPropagation();
+                        form.classList.add('was-validated');
+                        return false;
                     }
 
-                    form.classList.add('was-validated');
-                }, false)
-            })
+                    // Show loading state
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        if (btnText) btnText.textContent = 'Please wait...';
+                        if (spinner) spinner.classList.remove('d-none');
+                    }
+
+                    // Submit the form
+                    form.submit();
+                }, false);
+            });
         })();
     </script>
+
     <script>
         toastr.options = {
             closeButton: true,
@@ -253,8 +184,43 @@
 
         @if (session('success'))
             toastr.success("{{ session('success') }}");
+        @elseif (session('error'))
+            toastr.error("{{ session('error') }}");
         @endif
     </script>
+
+    @if ($errors->any())
+        <script>
+            toastr.error(`{!! implode('<br>', $errors->all()) !!}`);
+        </script>
+    @endif
+
+
+    <script>
+        $(document).ready(function() {
+            $('.delete-btn').click(function(e) {
+                e.preventDefault();
+
+                var form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>

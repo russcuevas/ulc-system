@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('gender');
             $table->string('status')->default('not verified');
             $table->string('verification_token')->nullable();
+            $table->string('reset_code')->nullable();
+            $table->timestamp('reset_expires_at')->nullable();
             $table->string('created_by')->nullable();
             $table->timestamps();
         });
