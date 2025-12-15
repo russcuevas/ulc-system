@@ -179,6 +179,15 @@
             z-index: 1190 !important;
         }
 
+        /* SweetAlert2 Z-Index Fix */
+        .swal2-container {
+            z-index: 20000 !important;
+        }
+
+        .swal2-popup {
+            z-index: 20001 !important;
+        }
+
 
 
         @media (max-width: 991.98px) {

@@ -22,7 +22,8 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-decoration-none"><i
                                 class="fas fa-home me-1"></i> Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><i class="fa-solid fa-hand-holding-dollar me-1"></i>
+                    <li class="breadcrumb-item active" aria-current="page"><i
+                            class="fa-solid fa-hand-holding-dollar me-1"></i>
                         Financial Counselor Area (FC)</li>
                 </ol>
             </nav>
@@ -39,8 +40,8 @@
                         </div>
 
                         <!-- Add Client Modal -->
-                        <div class="modal fade" id="addFinancialCounselorModal" tabindex="-1" aria-labelledby="addFinancialCounselorModalLabel"
-                            aria-hidden="true">
+                        <div class="modal fade" id="addFinancialCounselorModal" tabindex="-1"
+                            aria-labelledby="addFinancialCounselorModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-top modal-md">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -51,14 +52,15 @@
                                     <form id="addClientForm" class="needs-validation" novalidate>
                                         <div class="modal-body">
                                             <div class="row">
-                                                    <div class="mb-3">
-                                                        <label for="areas" class="form-label">Areas <span style="color: rgb(126, 30, 30)">*</span></label>
-                                                        <input type="text" class="form-control" id="areas"
-                                                            name="areas" required>
-                                                        <div class="invalid-feedback">
-                                                            Please enter an areas.
-                                                        </div>
+                                                <div class="mb-3">
+                                                    <label for="areas" class="form-label">Areas <span
+                                                            style="color: rgb(126, 30, 30)">*</span></label>
+                                                    <input type="text" class="form-control" id="areas"
+                                                        name="areas" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter an areas.
                                                     </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -85,17 +87,19 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($areas as $area)
-                                        <tr>
-                                            <td>{{ $area->area_name}}</td>
-                                            <td>
-                                                <a href="{{ route('areas.show', $area->id) }}" class="btn btn-sm btn-outline-info">
-                                                    View Clients <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ route('areas.payments.show', $area->id) }}" class="btn btn-sm btn-outline-primary">
-                                                    Payments <i class="fa-solid fa-coins"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>{{ $area->area_name }}</td>
+                                                <td>
+                                                    <a href="{{ route('areas.show', $area->id) }}"
+                                                        class="btn btn-sm btn-outline-info">
+                                                        View Clients <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('areas.payments.show', $area->id) }}"
+                                                        class="btn btn-sm btn-outline-primary">
+                                                        Payments <i class="fa-solid fa-coins"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
                                         @endforeach
 
                                     </tbody>
@@ -110,9 +114,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/dashboard_chart.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('.js-basic-example').DataTable({

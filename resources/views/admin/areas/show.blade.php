@@ -25,7 +25,8 @@
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-decoration-none"><i
                                 class="fas fa-home me-1"></i> Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('areas.index') }}" class="text-decoration-none"><i
-                                class="fas fa-solid fa-hand-holding-dollar me-1"></i> Financial Counselor Area (FC)</a></li>
+                                class="fas fa-solid fa-hand-holding-dollar me-1"></i> Financial Counselor Area (FC)</a>
+                    </li>
                     <li class="breadcrumb-item active" aria-current="page"><i class="fa-solid fa-users me-1"></i>
                         Clients - {{ $area->area_name }}</li>
                 </ol>
@@ -39,7 +40,9 @@
 
                         <div class="card-body p-4">
                             <div class="table-responsive">
-                                <table id="clientsTable" class="table table-hover table-striped dataTable js-basic-example" style="min-width: 1000px; border: 2px solid rgba(0,0,0,0.175) !important;">
+                                <table id="clientsTable"
+                                    class="table table-hover table-striped dataTable js-basic-example"
+                                    style="min-width: 1000px; border: 2px solid rgba(0,0,0,0.175) !important;">
                                     <thead>
                                         <tr>
                                             <th>Full Name</th>
@@ -52,20 +55,20 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($clients as $client)
-                                        <tr>
-                                            <td>{{ $client->fullname }}</td>
-                                            <td>{{ $client->phone }}</td>
-                                            <td>{{ $client->address }}</td>
-                                            <td>{{ $client->gender }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F j, Y - h:i A') }}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-info" 
-                                                        data-bs-toggle="modal" 
+                                            <tr>
+                                                <td>{{ $client->fullname }}</td>
+                                                <td>{{ $client->phone }}</td>
+                                                <td>{{ $client->address }}</td>
+                                                <td>{{ $client->gender }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F j, Y - h:i A') }}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
                                                         data-bs-target="#loanInfoModal{{ $client->id }}">
                                                         View Information <i class="fas fa-eye"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -83,11 +86,9 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/dashboard_chart.js') }}"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var table = $('#clientsTable').DataTable({
                 responsive: true,
                 pageLength: 10,
@@ -98,27 +99,27 @@
     </script>
 
     <script>
-    $(document).ready(function () {
-        $('table[id^="clientsLoans"]').each(function() {
-            $(this).DataTable({
-                responsive: true,
-                pageLength: 5,
-                lengthMenu: [5, 10, 25, 50],
-                orderCellsTop: true,
-                fixedHeader: true,
+        $(document).ready(function() {
+            $('table[id^="clientsLoans"]').each(function() {
+                $(this).DataTable({
+                    responsive: true,
+                    pageLength: 5,
+                    lengthMenu: [5, 10, 25, 50],
+                    orderCellsTop: true,
+                    fixedHeader: true,
+                });
             });
-        });
 
-        $('table[id^="clientsCollections"]').each(function() {
-            $(this).DataTable({
-                responsive: true,
-                pageLength: 5,
-                lengthMenu: [5, 10, 25, 50],
-                orderCellsTop: true,
-                fixedHeader: true,
+            $('table[id^="clientsCollections"]').each(function() {
+                $(this).DataTable({
+                    responsive: true,
+                    pageLength: 5,
+                    lengthMenu: [5, 10, 25, 50],
+                    orderCellsTop: true,
+                    fixedHeader: true,
+                });
             });
         });
-    });
     </script>
 
     <script>

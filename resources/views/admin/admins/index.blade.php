@@ -108,9 +108,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/dashboard_chart.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('.js-basic-example').DataTable({
@@ -147,7 +145,7 @@
                         if (password.value !== confirmPassword.value) {
                             confirmPassword.setCustomValidity("Passwords do not match");
                             if (confirmFeedback) confirmFeedback.textContent =
-                            "Passwords do not match.";
+                                "Passwords do not match.";
                         } else {
                             confirmPassword.setCustomValidity("");
                         }
