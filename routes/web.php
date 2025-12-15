@@ -67,10 +67,9 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('admin/areas/{area}/{reference_number}/view', [PaymentsController::class, 'ViewPayment'])
         ->name('areas.payments.view');
     Route::post('admin/areas/{area_id}/{reference_number}/update', [PaymentsController::class, 'UpdatePayment'])->name('areas.payments.update');
-    
     // Profile Routes
-    Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
-    Route::post('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::get('/admin/profile', [ProfileController::class, 'ProfilePage'])->name('admin.profile');
+    Route::post('/admin/profile', [ProfileController::class, 'ProfileUpdateRequest'])->name('admin.profile.update');
 });
 
 

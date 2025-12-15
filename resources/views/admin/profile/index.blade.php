@@ -180,10 +180,20 @@
                                     </div>
 
                                     <div class="text-end mt-3">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="fa-solid fa-floppy-disk me-1"></i>
-                                            Save Changes
+                                        <button type="submit" class="btn btn-primary px-4" id="saveProfileBtn">
+                                            <span class="btn-text">
+                                                <i class="fa-solid fa-floppy-disk me-1"></i>
+                                                Save Changes
+                                            </span>
+
+                                            <span class="btn-spinner d-none">
+                                                <span class="spinner-border spinner-border-sm me-1"
+                                                    role="status"></span>
+                                                Saving...
+                                            </span>
                                         </button>
+
+
                                     </div>
                                 </form>
                             </div>
@@ -220,6 +230,32 @@
             })
         })()
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.needs-validation');
+            const btn = document.getElementById('saveProfileBtn');
+
+            form.addEventListener('submit', function(event) {
+                // Only proceed if form is valid
+                if (!form.checkValidity()) return;
+
+                // Prevent double click
+                if (btn.disabled) {
+                    event.preventDefault();
+                    return;
+                }
+
+                // Disable the button
+                btn.disabled = true;
+
+                // Show spinner, hide original text
+                btn.querySelector('.btn-text').classList.add('d-none');
+                btn.querySelector('.btn-spinner').classList.remove('d-none');
+            });
+        });
+    </script>
+
 
     {{-- TOASTR --}}
     <script>
