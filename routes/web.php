@@ -10,6 +10,9 @@ use App\Http\Controllers\admin\AdminManagementController;
 use App\Http\Controllers\admin\ClientsController;
 use App\Http\Controllers\admin\AreasController;
 use App\Http\Controllers\admin\PaymentsController;
+use App\Http\Controllers\admin\ProfileController;
+
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,6 +67,10 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('admin/areas/{area}/{reference_number}/view', [PaymentsController::class, 'ViewPayment'])
         ->name('areas.payments.view');
     Route::post('admin/areas/{area_id}/{reference_number}/update', [PaymentsController::class, 'UpdatePayment'])->name('areas.payments.update');
+    
+    // Profile Routes
+    Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
+    Route::post('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
 });
 
 

@@ -107,7 +107,7 @@
                     <div class="card-body">
                         <h5 class="card-title mb-4">Recent Activity</h5>
 
-                        @foreach ($activities as $activity)
+                        @forelse ($activities as $activity)
                             <div class="d-flex gap-3 mb-4">
                                 <div class="activity-dot {{ $activity->color }} flex-shrink-0"></div>
                                 <div>
@@ -118,7 +118,11 @@
                                     </small>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="text-center text-muted py-4">
+                                <small>No Recent Activity</small>
+                            </div>
+                        @endforelse
 
                     </div>
                 </div>
